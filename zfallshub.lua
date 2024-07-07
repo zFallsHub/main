@@ -1,73 +1,35 @@
 local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
-local Window = OrionLib:MakeWindow({Name = "zFalls Hub - Get Key", HidePremium = false, SaveConfig = true, ConfigFolder = "keys", IntroText="Loading..."})
-
-local OrionLib = {
-	Elements = {},
-	ThemeObjects = {},
-	Connections = {},
-	Flags = {},
-	Themes = {
-		Default = {
-			Main = Color3.fromRGB(30, 30, 30),
-			Second = Color3.fromRGB(32, 32, 32),
-			Stroke = Color3.fromRGB(0, 140, 255),
-			Divider = Color3.fromRGB(60, 60, 60),
-			Text = Color3.fromRGB(240, 240, 240),
-			TextDark = Color3.fromRGB(150, 150, 150)
-		}
-	},
-	SelectedTheme = "Default",
-	Folder = nil,
-	SaveCfg = truec
-}
-
-local Tab = Window:MakeTab({
-	Name = "About Us",
-	Icon = "rbxassetid://7733746980",
-	PremiumOnly = false
-})
-
+local Player = game.Players.LocalPlayer
+local Window = OrionLib:MakeWindow({Name = "Key System", HidePremium = false, SaveConfig = true, ConfigFolder = "keyslog", IntroText = "Loading..."})
 local Section = Tab:AddSection({
-	Name = "Welcome! Join Discord To get Your Key"
+	Name = "Welcome to Key System: "..Player.DisplayName.." Your Current Version is 1.2"
 })
-local CombatFramework = require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework)
-local Camera = require(game.ReplicatedStorage.Util.CameraShaker)
-Camera:Stop()
 
-local fastAttackEnabled = false
-local autoAttackEnabled = false
+OrionLib:MakeNotification({
+	Name = "Welcome to zFalls Hub",
+	Content = "Your Are Using Version (1.2)",
+	Image = "rbxassetid://4483345998",
+	Time = 5
+})
 
-coroutine.wrap(function()
-    game:GetService("RunService").Stepped:Connect(function()
-        if fastAttackEnabled then
-            if getupvalues(CombatFramework)[2]['activeController'].timeToNextAttack then
-                getupvalues(CombatFramework)[2]['activeController'].timeToNextAttack = 0
-            end
-        end
-        
-        if autoAttackEnabled then
-            if getupvalues(CombatFramework)[2]['activeController'].timeToNextAttack == 0 then
-                getupvalues(CombatFramework)[2]['activeController']:attack()
-            end
-        end
-    end)
-end)()
+_G.KeyInput = ""
+_G.Key = "good_friday"
 
-Tab:AddToggle({
-	Name = "Fast Attack",
-	Default = false,
+Tab:AddTextbox({
+	Name = "Input Key",
+	Default = "",
+	TextDisappear = true,
 	Callback = function(Value)
-		fastAttackEnabled = Value
-	end    
+		_G.KeyInput = Value
+	end	  
 })
 
-Tab:AddToggle({
-	Name = "Auto Click",
-	Default = false,
-	Callback = function(Value)
-		autoAttackEnabled = Value
-	end    
+Tab:AddButton({
+	Name = "Verify Key!",
+	Callback = function()
+      	   if _G.KeyInput == _G.Key then
+                loadstring(game:HttpGet("https://raw.githubusercontent.com/zFallsHub/main/main/zzFallsHub.lua"))()
+		OrionLib:Destroy()
+	     end
+  	end    
 })
-
-
-

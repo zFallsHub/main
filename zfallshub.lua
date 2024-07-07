@@ -30,72 +30,44 @@ local Tab = Window:MakeTab({
 local Section = Tab:AddSection({
 	Name = "Welcome! Join Discord To get Your Key"
 })
+local CombatFramework = require(game:GetService("Players").LocalPlayer.PlayerScripts.CombatFramework)
+local Camera = require(game.ReplicatedStorage.Util.CameraShaker)
+Camera:Stop()
 
-OrionLib:MakeNotification({
-	Name = "Key Sistem!",
-	Content = "You Need Place Your Key Get in Discord!",
-	Image = "rbxassetid://4483345998",
-	Time = 5
-})
+local fastAttackEnabled = false
+local autoAttackEnabled = false
 
-Tab:AddTextbox({
-	Name = "Key Input",
-	Default = "",
-	TextDisappear = true,
+coroutine.wrap(function()
+    game:GetService("RunService").Stepped:Connect(function()
+        if fastAttackEnabled then
+            if getupvalues(CombatFramework)[2]['activeController'].timeToNextAttack then
+                getupvalues(CombatFramework)[2]['activeController'].timeToNextAttack = 0
+            end
+        end
+        
+        if autoAttackEnabled then
+            if getupvalues(CombatFramework)[2]['activeController'].timeToNextAttack == 0 then
+                getupvalues(CombatFramework)[2]['activeController']:attack()
+            end
+        end
+    end)
+end)()
+
+Tab:AddToggle({
+	Name = "Fast Attack",
+	Default = false,
 	Callback = function(Value)
-		print(Value)
-	end	  
+		fastAttackEnabled = Value
+	end    
 })
 
-Tab:AddButton({
-	Name = "Verify Key",
-	Callback = function()
-      		print("button pressed")
-  	end    
-})
-
-Tab:AddButton({
-	Name = "Copy Discord Link",
-	Callback = function()
-      	 local copy = “” 
-         setclipboard(copy)
-  	end    
-})
-
-
-
-local Section = Tab:AddSection({
-	Name = ".Premium Users Login."
-})
-
-
-
-
-
-Tab:AddTextbox({
-	Name = "Login: USER ( Bypass The Key System )",
-	Default = "",
-	TextDisappear = true,
+Tab:AddToggle({
+	Name = "Auto Click",
+	Default = false,
 	Callback = function(Value)
-		print(Value)
-	end	  
+		autoAttackEnabled = Value
+	end    
 })
-Tab:AddTextbox({
-	Name = "Login: PASSWORD ( Bypass The Key System )",
-	Default = "",
-	TextDisappear = true,
-	Callback = function(Value)
-		print(Value)
-	end	  
-})
-
-Tab:AddButton({
-	Name = "Join To Hub",
-	Callback = function()
-      		print("button pressed")
-  	end    
-})
-
 
 
 
